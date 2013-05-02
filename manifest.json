@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+
+  "name": "Open-as",
+  "description": "Open ids you find on webpages on other apis",
+  "version": "1.0",
+
+  "permissions": [
+    "contextMenus"
+  ],
+  "background": {
+    "scripts": [
+      "context.js"
+    ]
+  }
+}
