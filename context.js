@@ -5,10 +5,11 @@ chrome.storage.onChanged.addListener(function(changes) {
   if (!changes.services) {
     return;
   }
-  return chrome.runtime.sendMessage({
+  chrome.runtime.sendMessage({
     action: 'services',
     text: changes.services
   });
+  return window.init();
 });
 
 handler = function(e, service) {
@@ -41,28 +42,30 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  var label, parent, _i, _len, _ref, _results;
   if (request.action !== 'init_services') {
     return;
   }
-  parent = chrome.contextMenus.create({
-    contexts: ['selection'],
-    title: "Open as",
-    id: "oaparent"
-  });
-  _ref = request.services;
-  _results = [];
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    label = _ref[_i];
-    _results.push(chrome.contextMenus.create({
+  return chrome.contextMenus.removeAll(function() {
+    var label, parent, _i, _len, _ref, _results;
+    parent = chrome.contextMenus.create({
       contexts: ['selection'],
-      title: label,
-      id: label,
-      onclick: handler,
-      parentId: 'oaparent'
-    }));
-  }
-  return _results;
+      title: "Open as",
+      id: "oaparent"
+    });
+    _ref = request.services;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      label = _ref[_i];
+      _results.push(chrome.contextMenus.create({
+        contexts: ['selection'],
+        title: label,
+        id: label,
+        onclick: handler,
+        parentId: 'oaparent'
+      }));
+    }
+    return _results;
+  });
 });
 
 window.init = function() {

@@ -1,9 +1,11 @@
+# Resolvers were changed
 chrome.storage.onChanged.addListener (changes) ->
   return unless changes.services
   chrome.runtime.sendMessage(
     action: 'services'
     text: changes.services
   )
+  window.init()
 
 # Send resolve message off to config window
 handler = (e, service) ->
@@ -22,15 +24,16 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
 
 chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
   return unless request.action == 'init_services'
-  parent = chrome.contextMenus.create( contexts: ['selection'], title: "Open as", id: "oaparent" )
-  for label in request.services
-    chrome.contextMenus.create(
-      contexts: ['selection']
-      title:    label
-      id:       label
-      onclick:  handler
-      parentId: 'oaparent'
-    )
+  chrome.contextMenus.removeAll ->
+    parent = chrome.contextMenus.create( contexts: ['selection'], title: "Open as", id: "oaparent" )
+    for label in request.services
+      chrome.contextMenus.create(
+        contexts: ['selection']
+        title:    label
+        id:       label
+        onclick:  handler
+        parentId: 'oaparent'
+      )
 
 
 # Create context menus and init sandboxed resolver
