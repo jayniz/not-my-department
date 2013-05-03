@@ -1,0 +1,19 @@
+<!doctype html>
+<head>
+<script src="coffee-script.js"></script>
+<script type="text/coffeescript">
+window.addEventListener 'message', (event) ->
+  text = event.data.text
+  if(event.data.action == 'services')
+    coffee = CoffeeScript.compile(text, {bare: true})
+    window.services = eval(coffee)
+  if(event.data.action == 'resolve')
+    fn = window.services[event.data.service]
+    for url in event.data.text.split(" ")
+      url = fn(url)
+      event.source.postMessage({action: 'openUrl', url: url }, event.origin);
+</script>
+</head>
+<body>
+</body>
+</html>

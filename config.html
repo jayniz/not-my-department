@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <title>Getting Started Extension's Popup</title>
+  <script src="coffee-script.js"></script>
+  <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="ace/theme-monokai.js" type="text/javascript" charset="utf-8"></script>
+  <script src="ace/mode-coffee.js" type="text/javascript" charset="utf-8"></script>
+  <script src="config.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+<body>
+  <div style="width: 600px; height: 300px" id="editor">
+{
+  "facebook object": (id) -> "https://graph.facebook.com/#{id}"
+  "sheldon node"   : (id) -> "http://primus.sheldon.moviepilot.com/nodes/#{id}"
+  "mp.de movie"    : (id) -> "http://www.moviepilot.de/movies/#{id}"
+  "mp.com movie"   : (id) -> "http://moviepilot.com/movies/#{id}"
+}
+  </div>
+  <button id="save">Save</button>
+</body>
+</html>

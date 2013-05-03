@@ -9,20 +9,55 @@ services = {
     return "http://primus.sheldon.moviepilot.com/nodes/" + id;
   },
   "mp.de movie": function(id) {
-    return "http://moviepilot.de/movies/" + id;
+    return "http://www.moviepilot.de/movies/" + id;
   },
   "mp.com movie": function(id) {
     return "http://moviepilot.com/movies/" + id;
   }
 };
 
-handler = function(e, service) {
-  var fn;
-  fn = services[e.menuItemId];
-  return chrome.tabs.create({
-    url: fn(e.selectionText)
+chrome.storage.onChanged.addListener(function(changes) {
+  var parsed;
+  if (!changes.services) {
+    return;
+  }
+  parsed = CoffeeScript.compile(changes.services, {
+    bare: true
   });
+  chrome.storage.local.set({
+    services: changes.services
+  });
+  return services = parsed;
+});
+
+handler = function(e, service) {
+  var text, _i, _len, _ref, _results;
+  _ref = e.selectionText.split(" ");
+  _results = [];
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    text = _ref[_i];
+    _results.push(chrome.runtime.sendMessage({
+      action: 'resolve',
+      service: e.menuItemId,
+      text: text
+    }));
+  }
+  return _results;
 };
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  var url;
+  if (request.action !== 'openUrl') {
+    return;
+  }
+  url = request.url;
+  if (url !== "") {
+    return chrome.tabs.create({
+      url: url,
+      active: false
+    });
+  }
+});
 
 parent = chrome.contextMenus.create({
   contexts: ['selection'],
@@ -40,3 +75,10 @@ for (label in services) {
     parentId: 'oaparent'
   });
 }
+
+window.init_services = function() {
+  return chrome.runtime.sendMessage({
+    action: 'services',
+    text: "services = {\n  \"facebook object\": (id) -> \"https://graph.facebook.com/\#{id}\"\n  \"sheldon node\"   : (id) -> \"http://primus.sheldon.moviepilot.com/nodes/\#{id}\"\n  \"mp.de movie\"    : (id) -> \"http://www.moviepilot.de/movies/\#{id}\"\n  \"mp.com movie\"   : (id) -> \"http://moviepilot.com/movies/\#{id}\"\n}"
+  });
+};
