@@ -1,15 +1,9 @@
-services = {
-  "facebook object": (id) -> "https://graph.facebook.com/#{id}"
-  "sheldon node"   : (id) -> "http://primus.sheldon.moviepilot.com/nodes/#{id}"
-  "mp.de movie"    : (id) -> "http://www.moviepilot.de/movies/#{id}"
-  "mp.com movie"   : (id) -> "http://moviepilot.com/movies/#{id}"
-}
-
 chrome.storage.onChanged.addListener (changes) ->
   return unless changes.services
-  parsed = CoffeeScript.compile(changes.services, bare: true)
-  chrome.storage.local.set(services: changes.services)
-  services = parsed
+  chrome.runtime.sendMessage(
+    action: 'services'
+    text: changes.services
+  )
 
 # Send resolve message off to config window
 handler = (e, service) ->
@@ -26,27 +20,31 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
   url = request.url
   chrome.tabs.create(url: url, active: false) if url != ""
 
-parent = chrome.contextMenus.create( contexts: ['selection'], title: "Open as", id: "oaparent" )
-for label,resolver of services
-  chrome.contextMenus.create(
-    contexts: ['selection']
-    title:    label
-    id:       label
-    onclick:  handler
-    parentId: 'oaparent'
-  )
+chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
+  return unless request.action == 'init_services'
+  parent = chrome.contextMenus.create( contexts: ['selection'], title: "Open as", id: "oaparent" )
+  for label in request.services
+    chrome.contextMenus.create(
+      contexts: ['selection']
+      title:    label
+      id:       label
+      onclick:  handler
+      parentId: 'oaparent'
+    )
 
-window.init_services = ->
-  chrome.runtime.sendMessage(
-    action: 'services'
-    text: """
-  services = {
-    "facebook object": (id) -> "https://graph.facebook.com/\#{id}"
-    "sheldon node"   : (id) -> "http://primus.sheldon.moviepilot.com/nodes/\#{id}"
-    "mp.de movie"    : (id) -> "http://www.moviepilot.de/movies/\#{id}"
-    "mp.com movie"   : (id) -> "http://moviepilot.com/movies/\#{id}"
-  }
+
+# Create context menus and init sandboxed resolver
+window.init = ->
+  default_services = """
+services = {
+  "facebook object": (id) -> "https://graph.facebook.com/\#{id}"
+}
   """
-  )
+  services = chrome.storage.local.get 'services', (val) ->
+    services = val.services or default_services
+    chrome.runtime.sendMessage(
+      action: 'services'
+      text: services
+    )
 
 

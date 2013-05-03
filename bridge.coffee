@@ -1,7 +1,7 @@
 document.addEventListener 'DOMContentLoaded', ->
 
   iFrame = document.getElementById('theFrame')
-  iFrame.onload = window.init_services
+  iFrame.onload = window.init
 
   # Receive resolved URL from sandbox window and pass
   # it on to the context menu

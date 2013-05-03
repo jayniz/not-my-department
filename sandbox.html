@@ -7,11 +7,14 @@ window.addEventListener 'message', (event) ->
   if(event.data.action == 'services')
     coffee = CoffeeScript.compile(text, {bare: true})
     window.services = eval(coffee)
+    services_list = for name, fn of window.services
+      name
+    event.source.postMessage({action: 'init_services', services: services_list}, event.origin)
   if(event.data.action == 'resolve')
     fn = window.services[event.data.service]
     for url in event.data.text.split(" ")
       url = fn(url)
-      event.source.postMessage({action: 'openUrl', url: url }, event.origin);
+      event.source.postMessage({action: 'openUrl', url: url }, event.origin)
 </script>
 </head>
 <body>
