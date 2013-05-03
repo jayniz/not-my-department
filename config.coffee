@@ -11,6 +11,7 @@ window.janun = ->
   document.getElementById('save').addEventListener 'click', ->
     config = ace_editor.getValue()
     chrome.storage.local.set(services: config)
+    window.close()
 
 document.addEventListener 'DOMContentLoaded', janun
 
