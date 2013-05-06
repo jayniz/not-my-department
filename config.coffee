@@ -1,5 +1,4 @@
 defaults = """
-
 # Example for an asynchronous resolver that searches on
 # facebook and opens the first thing it finds
 fbLucky = (term, type, tabOpenCallback) ->
@@ -25,11 +24,18 @@ window.janun = ->
   ace_editor.getSession().setUseSoftTabs(true)
   chrome.storage.local.get 'services', (s) ->
     ace_editor.setValue(s.services)
+    ace_editor.selection.clearSelection()
 
   # Save button
   document.getElementById('save-button').addEventListener 'click', ->
     config = ace_editor.getValue()
     chrome.storage.local.set(services: config)
+    window.close()
+
+  # Help button
+  document.getElementById('help-button').addEventListener 'click', ->
+    url = 'https://github.com/jayniz/open-as#readme'
+    chrome.tabs.create(url: url, active: true) if url != ""
     window.close()
 
   # Defaults button
