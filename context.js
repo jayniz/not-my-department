@@ -13,18 +13,11 @@ chrome.storage.onChanged.addListener(function(changes) {
 });
 
 handler = function(e, service) {
-  var text, _i, _len, _ref, _results;
-  _ref = e.selectionText.split(" ");
-  _results = [];
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    text = _ref[_i];
-    _results.push(chrome.runtime.sendMessage({
-      action: 'resolve',
-      service: e.menuItemId,
-      text: text
-    }));
-  }
-  return _results;
+  return chrome.runtime.sendMessage({
+    action: 'resolve',
+    service: e.menuItemId,
+    text: e.selectionText
+  });
 };
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -49,7 +42,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var label, parent, _i, _len, _ref, _results;
     parent = chrome.contextMenus.create({
       contexts: ['selection'],
-      title: "Open as",
+      title: "Open as...",
       id: "oaparent"
     });
     _ref = request.services;

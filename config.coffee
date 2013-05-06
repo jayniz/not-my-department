@@ -1,13 +1,19 @@
 defaults = """
+
+# Example for an asynchronous resolver that searches on
+# facebook and opens the first thing it finds
 fbLucky = (term, type, tabOpenCallback) ->
   searchUrl = 'https://graph.facebook.com/search?q=moviepilot.com&type=\#{type}'
   $.getJSON(searchUrl).done (r) ->
     tabOpenCallback("http://graph.facebook.com/\#{r.data[0].id}")
 
+# This defines the context menu. Note how your resolver can
+# either return a string, or pass on the work to a more complicated
+# function:
 {
   "facebook object": (id) -> "https://graph.facebook.com/\#{id}"
-  "feeling facebook page lucky":  (term, callback) -> fbLucky(term, 'page', callback)
-  "feeling facebook movie lucky": (term, callback) -> fbLucky(term, 'movie', callback)
+  "facebook page search":  (term, callback) -> fbLucky(term, 'page', callback)
+  "facebook movie search": (term, callback) -> fbLucky(term, 'movie', callback)
 }
 """
 
