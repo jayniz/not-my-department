@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Andere Abteilung",
-  "description": "Right click anything to open it anywhere. Example: You browse a json response of your own api, right click a facebook id and open it in Chrome. You can write custom resolvers in coffee script.",
+  "name": "Not my department",
+  "description": "Adds an 'Open as...' context menu with configurable actions: search, open on some API, you name it.",
   "version": "0.1",
   "icons": { "16": "icon/16.png",
              "32": "icon/32.png",
