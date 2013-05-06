@@ -1,3 +1,19 @@
+default_services = """
+# Since this is CoffeeScript, you can do anything you want here,
+# you have jquery and underscore to do your stuff. For example,
+# make a search and open the first result:
+myOwnResolver = (selectedText, callback) ->
+  url = "http://graph.facebook.com/search?q=\#{selectedText}&type=person"
+  r = $.getJSON(url)
+  r.done (d) ->
+    callback("http://graph.facebook.com/\#{d.data[0].id}")
+
+{
+  "Facebook object": (id) -> "https://graph.facebook.com/\#{id}"
+  "My own menu item": myOwnResolver
+}
+"""
+
 # Resolvers were changed, let's save them
 chrome.storage.onChanged.addListener (changes) ->
   return unless changes.services
@@ -39,12 +55,7 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
 # Send configuration json to sandbox so it can eval it
 # and tell us which context menu items to create
 window.init = ->
-  default_services = """
-services = {
-  "facebook object": (id) -> "https://graph.facebook.com/\#{id}"
-}
-  """
-  services = chrome.storage.local.get 'services', (val) ->
+  chrome.storage.local.get 'services', (val) ->
     services = val.services or default_services
     chrome.runtime.sendMessage(
       action: 'services'

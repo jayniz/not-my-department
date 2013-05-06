@@ -1,5 +1,15 @@
-document.addEventListener 'DOMContentLoaded', ->
 
+document.addEventListener 'DOMContentLoaded', ->
+  # Init with default services
+  # chrome.storage.local.get 'services', (val) ->
+  #   return if val.services and val.services != ""
+  #   debugger
+  #   chrome.runtime.sendMessage(
+  #     action: 'services'
+  #     text: default_services
+  #   )
+
+  # Prepare sandboxed iframe
   iFrame = document.getElementById('theFrame')
   iFrame.onload = window.init
 
