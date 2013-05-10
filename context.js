@@ -3,13 +3,12 @@ var default_services, handler;
 
 default_services = "# Since this is CoffeeScript, you can do anything you want here,\n# you have jquery and underscore to do your stuff. For example,\n# make a search and open the first result:\nmyOwnResolver = (selectedText, callback) ->\n  url = \"http://graph.facebook.com/search?q=\#{selectedText}&type=person\"\n  r = $.getJSON(url)\n  r.done (d) ->\n    callback(\"http://graph.facebook.com/\#{d.data[0].id}\")\n\n{\n  \"Facebook object\": (id) -> \"https://graph.facebook.com/\#{id}\"\n  \"My own menu item\": myOwnResolver\n}";
 
-chrome.storage.onChanged.addListener(function(changes) {
-  if (!changes.services) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.action !== "save_services") {
     return;
   }
-  chrome.runtime.sendMessage({
-    action: 'services',
-    text: changes.services
+  chrome.storage.local.set({
+    services: request.services
   });
   return window.init();
 });
@@ -37,30 +36,52 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action !== 'init_services') {
-    return;
-  }
-  return chrome.contextMenus.removeAll(function() {
-    var label, parent, _i, _len, _ref, _results;
-    parent = chrome.contextMenus.create({
-      contexts: ['selection'],
-      title: "Open as...",
-      id: "oaparent"
-    });
-    _ref = request.services;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      label = _ref[_i];
-      _results.push(chrome.contextMenus.create({
+  if (request.action === 'init_services') {
+    chrome.contextMenus.removeAll(function() {
+      var label, parent, _i, _len, _ref, _results;
+      parent = chrome.contextMenus.create({
         contexts: ['selection'],
-        title: label,
-        id: label,
-        onclick: handler,
-        parentId: 'oaparent'
-      }));
-    }
-    return _results;
-  });
+        title: "Open as...",
+        id: "oaparent"
+      });
+      _ref = request.services;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        label = _ref[_i];
+        _results.push(chrome.contextMenus.create({
+          contexts: ['selection'],
+          title: label,
+          id: label,
+          onclick: handler,
+          parentId: 'oaparent'
+        }));
+      }
+      return _results;
+    });
+  }
+  if (request.action === 'syntax_error') {
+    return chrome.contextMenus.removeAll(function() {
+      var label, parent, _i, _len, _ref, _results;
+      parent = chrome.contextMenus.create({
+        contexts: ['selection'],
+        title: "Open as...",
+        id: "oaparent"
+      });
+      _ref = ['Parse', 'Error', 'Check', 'Your', 'Config', ':)'];
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        label = _ref[_i];
+        _results.push(chrome.contextMenus.create({
+          contexts: ['selection'],
+          title: label,
+          id: label,
+          onclick: handler,
+          parentId: 'oaparent'
+        }));
+      }
+      return _results;
+    });
+  }
 });
 
 window.init = function() {

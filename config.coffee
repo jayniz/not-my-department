@@ -29,9 +29,14 @@ window.undBitte = ->
 
   # Save button
   document.getElementById('save-button').addEventListener 'click', ->
+    console.log("I saved")
     config = ace_editor.getValue()
-    chrome.storage.local.set(services: config)
-    window.close()
+    document.getElementById('status-label').innerText = "Saving..."
+    chrome.runtime.sendMessage(
+      action: 'save_services'
+      services: config
+    )
+    # window.close()
 
   # Help button
   document.getElementById('help-button').addEventListener 'click', ->
@@ -44,10 +49,19 @@ window.undBitte = ->
     ace_editor.setValue(default_services)
     ace_editor.selection.clearSelection()
 
-  # Cancel button
-  document.getElementById('cancel-button').addEventListener 'click', ->
+  # close button
+  document.getElementById('close-button').addEventListener 'click', ->
     window.close()
 
+  # Status
+  chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
+    debugger
+    sl = document.getElementById('status-label')
+    return unless request.action == "init_services" or request.action == "syntax_error"
+    if request.action == "init_services"
+      sl.innerText = "Saved"
+    if request.action == "syntax_error"
+      sl.innerText = "Error"
 
 document.addEventListener 'DOMContentLoaded', undBitte
 

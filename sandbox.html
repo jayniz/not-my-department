@@ -5,13 +5,19 @@
 <script src="underscore-min.js"></script>
 <script type="text/coffeescript">
 window.addEventListener 'message', (event) ->
-  text = event.data.text
   if(event.data.action == 'services')
-    coffee = CoffeeScript.compile(text, {bare: true})
-    window.services = eval(coffee)
-    services_list = for name, fn of window.services
-      name
-    event.source.postMessage({action: 'init_services', services: services_list}, event.origin)
+    try
+      text = event.data.text
+      coffee = CoffeeScript.compile(text, {bare: true})
+      window.services = eval(coffee)
+      services_list = for name, fn of window.services
+        name
+      event.source.postMessage({action: 'init_services', services: services_list}, event.origin)
+    catch e
+      if e instanceof SyntaxError
+        event.source.postMessage({action: 'syntax_error', message: e.toString(), exception: JSON.stringify(e)}, event.origin)
+      else
+        event.source.postMessage({action: 'log', message: (e.toString())}, event.origin)
   if(event.data.action == 'resolve')
     fn = window.services[event.data.service]
     text = event.data.text

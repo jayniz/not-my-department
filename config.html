@@ -5,6 +5,7 @@
   body {
     background-color: rgb(61, 63, 62);
     padding-bottom: 30px;
+    font-family: Helvetica, Sans;
   }
 
   #editor {
@@ -12,8 +13,7 @@
     height: 300px;
   }
 
-  button {
-    font-family: Helvetica, Sans;
+  button  {
     float: right;
     border: 1px solid #ccc;
     background-color: black;
@@ -21,6 +21,12 @@
     padding: 5px;
     border-radius: 2px;
     margin: 10px 0px 10px 10px;
+  }
+
+  #status-label {
+    float: left;
+    padding: 5px;
+    color: #ccc;
   }
 
   button:nth-child(2), button:nth-child(3) {
@@ -41,7 +47,8 @@
   </div>
   <button id="default-button">Defaults</button>
   <button id="help-button">Help</button>
+  <span   id="status-label"></span>
   <button id="save-button">Save</button>
-  <button id="cancel-button">Cancel</button>
+  <button id="close-button">Close</button>
 </body>
 </html>

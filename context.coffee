@@ -15,12 +15,9 @@ myOwnResolver = (selectedText, callback) ->
 """
 
 # Resolvers were changed, let's save them
-chrome.storage.onChanged.addListener (changes) ->
-  return unless changes.services
-  chrome.runtime.sendMessage(
-    action: 'services'
-    text: changes.services
-  )
+chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
+  return unless request.action == "save_services"
+  chrome.storage.local.set(services: request.services)
   window.init()
 
 # Send resolve message off to config window
@@ -40,17 +37,29 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
 # Sandboxed window told us which services exist,
 # create the context menu items
 chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
-  return unless request.action == 'init_services'
-  chrome.contextMenus.removeAll ->
-    parent = chrome.contextMenus.create( contexts: ['selection'], title: "Open as...", id: "oaparent" )
-    for label in request.services
-      chrome.contextMenus.create(
-        contexts: ['selection']
-        title:    label
-        id:       label
-        onclick:  handler
-        parentId: 'oaparent'
-      )
+  if request.action == 'init_services'
+    chrome.contextMenus.removeAll ->
+      parent = chrome.contextMenus.create( contexts: ['selection'], title: "Open as...", id: "oaparent" )
+      for label in request.services
+        chrome.contextMenus.create(
+          contexts: ['selection']
+          title:    label
+          id:       label
+          onclick:  handler
+          parentId: 'oaparent'
+        )
+  if request.action == 'syntax_error'
+    chrome.contextMenus.removeAll ->
+      parent = chrome.contextMenus.create( contexts: ['selection'], title: "Open as...", id: "oaparent" )
+      for label in ['Parse', 'Error', 'Check', 'Your', 'Config', ':)']
+        chrome.contextMenus.create(
+          contexts: ['selection']
+          title:    label
+          id:       label
+          onclick:  handler
+          parentId: 'oaparent'
+        )
+
 
 # Send configuration json to sandbox so it can eval it
 # and tell us which context menu items to create
