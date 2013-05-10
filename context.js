@@ -3,6 +3,15 @@ var default_services, handler;
 
 default_services = "# Since this is CoffeeScript, you can do anything you want here,\n# you have jquery and underscore to do your stuff. For example,\n# make a search and open the first result:\nmyOwnResolver = (selectedText, callback) ->\n  url = \"http://graph.facebook.com/search?q=\#{selectedText}&type=person\"\n  r = $.getJSON(url)\n  r.done (d) ->\n    callback(\"http://graph.facebook.com/\#{d.data[0].id}\")\n\n{\n  \"Facebook object\": (id) -> \"https://graph.facebook.com/\#{id}\"\n  \"My own menu item\": myOwnResolver\n}";
 
+chrome.storage.local.get('services', function(val) {
+  if (val.services) {
+    return;
+  }
+  return chrome.storage.local.set({
+    services: default_services
+  });
+});
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.action !== "save_services") {
     return;
@@ -87,7 +96,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 window.init = function() {
   return chrome.storage.local.get('services', function(val) {
     var services;
-    services = val.services || default_services;
+    services = val.services;
     return chrome.runtime.sendMessage({
       action: 'services',
       text: services

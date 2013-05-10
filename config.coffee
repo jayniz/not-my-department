@@ -24,7 +24,7 @@ window.undBitte = ->
     if services = s.services
       ace_editor.setValue(s.services)
     else
-      ace_editor.setValue("# Try the defaults button, then hit save")
+      ace_editor.setValue("# Try the example button, then hit save")
     ace_editor.selection.clearSelection()
 
   # Save button

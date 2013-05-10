@@ -14,6 +14,10 @@ myOwnResolver = (selectedText, callback) ->
 }
 """
 
+chrome.storage.local.get 'services', (val) ->
+  return if val.services
+  chrome.storage.local.set(services: default_services)
+
 # Resolvers were changed, let's save them
 chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
   return unless request.action == "save_services"
@@ -65,7 +69,7 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
 # and tell us which context menu items to create
 window.init = ->
   chrome.storage.local.get 'services', (val) ->
-    services = val.services or default_services
+    services = val.services
     chrome.runtime.sendMessage(
       action: 'services'
       text: services
