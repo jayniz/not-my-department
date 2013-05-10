@@ -29,9 +29,7 @@ window.undBitte = ->
 
   # Save button
   document.getElementById('save-button').addEventListener 'click', ->
-    console.log("I saved")
     config = ace_editor.getValue()
-    document.getElementById('status-label').innerText = "Saving..."
     chrome.runtime.sendMessage(
       action: 'save_services'
       services: config
@@ -59,9 +57,10 @@ window.undBitte = ->
     sl = document.getElementById('status-label')
     return unless request.action == "init_services" or request.action == "syntax_error"
     if request.action == "init_services"
-      sl.innerText = "Saved"
+      sl.innerText = "Saved, #{request.services.length} menu items created"
+      window.setTimeout((-> sl.innerText = ''), 2000)
     if request.action == "syntax_error"
-      sl.innerText = "Error"
+      sl.innerText = request.message
 
 document.addEventListener 'DOMContentLoaded', undBitte
 

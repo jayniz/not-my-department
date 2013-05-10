@@ -3,7 +3,7 @@
 
   "name": "Not my department",
   "description": "Adds an 'Open as...' context menu with configurable actions: search, open on an API, 100% scriptable (via CoffeeScript).",
-  "version": "0.2",
+  "version": "0.3",
   "icons": { "16": "icon/16.png",
              "32": "icon/32.png",
              "48": "icon/48.png",
