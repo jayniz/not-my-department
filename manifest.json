@@ -25,5 +25,6 @@
   "browser_action": {
     "default_icon": "icon/32.png",
     "default_popup": "config.html"
-  }
+  },
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'"
 }
