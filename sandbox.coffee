@@ -3,7 +3,7 @@
 # sandbox. So we take it and show it as a desktop
 # notification
 last_event = null
-alert = (message, title = 'Not my department') ->
+alert = (message, title = 'Alert') ->
   options = {action: 'alert', message: message, title: title}
   event.source.postMessage(options, event.origin)
 

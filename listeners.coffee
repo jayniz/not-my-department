@@ -4,8 +4,8 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
   return unless request.action == 'alert'
   webkitNotifications.createNotification(
     'icon/48.png'
-    request.title
     request.message
+    request.title
   ).show()
 
 # Collect some statistics to know if people understand how to use this
