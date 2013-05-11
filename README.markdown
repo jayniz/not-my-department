@@ -4,11 +4,12 @@ Not my department
 This is a chrome extension that adds an 'Open as...' context menu
 with configurable actions: search, open on an API, 100% scriptable
 via CoffeeScript. I needed something like this while working on
-APIs, so I decided to try out how these Chrome extensions work.
+APIs, so I decided to try out how these Chrome extensions work
+and write one myself.
 
 
 How to configure
-================
+-----------------
 
 It's just CoffeeScript. You can write your own functions that get
 called when you right click on words in chrome. It could be as
@@ -19,7 +20,7 @@ else and finally display a message via chrome notifications.
 
 
 Example configuration
-=====================
+---------------------
 
 ```coffee
 # You have jquery and underscore available. Hack away!
@@ -47,7 +48,7 @@ timestamp = (val) ->
 ```
 
 More complicated resolver
-=========================
+-------------------------
 
 So let's make a facebook graph search, take the first result, and
 open it:
@@ -68,7 +69,7 @@ feelingFacebookLucky = (selectedText, openTabCallback) ->
 
 
 Acknowledgements
-================
+----------------
 
 I used the lovely rubix cube icons from 
 [shlyapnikova's](http://shlyapnikova.deviantart.com/art/Rubik-s-Cube-Icon-163909690) deviant art.
