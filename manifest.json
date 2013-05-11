@@ -14,7 +14,8 @@
   },
   "permissions": [
     "contextMenus",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "sandbox": {
      "pages": ["sandbox.html"]
