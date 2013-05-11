@@ -1,28 +1,3 @@
-default_services = """
-# You have jquery and underscore available. Hack away!
-#
-# (Don't try console.log, it will not work because this stuff
-# is run in a sandbox. But you can use alert)
-
-# An example for a more elaborated resolver than just putting
-# a word in a string:
-#   Resolve a unix (seconds) or js (milliseconds) timestamp
-timestamp = (val) ->
-  in_ms = Math.abs(+new Date()/val) < 100
-  val *= 1000 unless in_ms
-  date = new Date(val)
-  alert(date.toLocaleString())
-
-# This has to be the last part of your script, and it defines
-# the context menu items that will be created.
-{
-  "Timestamp": timestamp
-  "Facebook object": (id) -> "https://facebook.com/\#{id}"
-  "Subreddit":     (word) -> "http://reddit.com/r/\#{word}"
-  "Twitter user":  (user) -> "http://twitter.com/\#{user}"
-}
-"""
-
 window.undBitte = ->
   ace_editor = ace.edit("editor")
   ace_editor.setTheme("ace/theme/monokai")
@@ -53,8 +28,9 @@ window.undBitte = ->
 
   # Defaults button
   document.getElementById('default-button').addEventListener 'click', ->
-    ace_editor.setValue(default_services)
-    ace_editor.selection.clearSelection()
+    chrome.storage.local.get 'services', (val) ->
+      ace_editor.setValue(val.services)
+      ace_editor.selection.clearSelection()
 
   # close button
   document.getElementById('close-button').addEventListener 'click', ->
