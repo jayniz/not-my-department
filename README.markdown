@@ -53,7 +53,17 @@ So let's make a facebook graph search, take the first result, and
 open it:
 
 ```coffee
-TODO
+feelingFacebookLucky = (selectedText, openTabCallback) ->
+  term = encodeURIComponent(selectedText)
+  url = "http://graph.facebook.com/search?q=#{term}&type=page"
+  r = $.getJSON(url)
+  r.done (d) ->
+    return alert('Did not find anything') if d.data.length == 0
+    openTabCallback("http://graph.facebook.com/#{d.data[0].id}")
+
+{
+  "I'm feeling lucky": feelingFacebookLucky
+}
 ```
 
 

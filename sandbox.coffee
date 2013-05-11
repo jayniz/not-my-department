@@ -5,7 +5,7 @@
 last_event = null
 alert = (message, title = 'Alert') ->
   options = {action: 'alert', message: message, title: title}
-  event.source.postMessage(options, event.origin)
+  last_event.source.postMessage(options, last_event.origin)
 
 # Take coffeescript, parse it into javascript,
 # eval it and store the service resolver functions

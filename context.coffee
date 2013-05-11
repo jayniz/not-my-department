@@ -1,15 +1,11 @@
 default_services = """
 # You have jquery and underscore available. Hack away!
-#
-# (Don't try console.log, it will not work because this stuff
-# is run in a sandbox. But you can use alert)
+# Don't try console.log, it will not work because this stuff
+# is run in a sandbox. But you can use alert.
 
 # An example for a more elaborated resolver than just putting
-# a word in a string:
-#   Resolve a unix (seconds) or js (milliseconds) timestamp
+# a word in a string: Resolve a unix timestamp
 timestamp = (val) ->
-  in_ms = Math.abs(+new Date()/val) < 100
-  val *= 1000 unless in_ms
   date = new Date(val)
   alert(date.toLocaleString())
 
