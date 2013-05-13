@@ -10,9 +10,10 @@ chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
 
 # Collect some statistics to know if people understand how to use this
 chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
-  track_event = (event, label = "something", value = "") ->
+  trackEvent = (event, label = "something", value = "") ->
     _gaq.push(['_trackEvent', event, label, value ])
   switch request.action
-    when 'init_services' then track_event('Created configuration', 'items', "#{request.services.length}")
-    when 'syntax_error'  then track_event('Config error', 'message', request.message)
-    when 'openUrl'       then track_event('Item resolved')
+    when 'initServices' then trackEvent('Created configuration', 'items', "#{request.services.length}")
+    when 'syntaxError'  then trackEvent('Config error', 'message', request.message)
+    when 'openUrl'       then trackEvent('Item resolved')
+    when 'defaultsError' then trackEvent('Defaults error')

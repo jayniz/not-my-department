@@ -2,10 +2,10 @@
 # configuration, but it can't bubble up from the
 # sandbox. So we take it and show it as a desktop
 # notification
-last_event = null
+lastEvent = null
 alert = (message, title = 'Alert') ->
   options = {action: 'alert', message: message, title: title}
-  last_event.source.postMessage(options, last_event.origin)
+  lastEvent.source.postMessage(options, lastEvent.origin)
 
 # Take coffeescript, parse it into javascript,
 # eval it and store the service resolver functions
@@ -16,28 +16,44 @@ parseServices = (event) ->
     evaled = eval(coffee)
     if evaled instanceof Object
       window.services = evaled
-      services_list = for name, fn of window.services
+      servicesList = for name, fn of window.services
         name
-      event.source.postMessage({action: 'init_services', services: services_list}, event.origin)
+      event.source.postMessage({action: 'initServices', services: servicesList}, event.origin)
     else
-      event.source.postMessage({action: 'syntax_error', message: "Error: returned #{typeof evaled} instead of Object"}, event.origin)
+      event.source.postMessage({action: 'syntaxError', message: "Error: returned #{typeof evaled} instead of Object"}, event.origin)
   catch e
-    event.source.postMessage({action: 'syntax_error', message: e.toString(), exception: JSON.stringify(e)}, event.origin)
+    event.source.postMessage({action: 'syntaxError', message: e.toString(), exception: JSON.stringify(e)}, event.origin)
+
+getDefaultsFromGithub = (event) ->
+  error = (e) ->
+    event.source.postMessage({action: 'services', services: "# Could not load defaults from github :("}, event.origin)
+    event.source.postMessage({action: 'defaultsError', error: JSON.stringify(e)}, event.origin)
+  success = (defaults) ->
+    event.source.postMessage({action: 'saveServices',    services: defaults}, event.origin)
+    event.source.postMessage({action: 'defaultServices', services: defaults}, event.origin)
+  $.ajax("https://raw.github.com/jayniz/not-my-department/master/defaults.jsonp",
+    dataType: "jsonp"
+    jsonpCallback: "bazinga"
+    success:  success
+    error:    error
+  )
+
 
 # Resolve a keyword into a url
 resolve = (event) ->
-  last_event = event # We need this for helpers like alert
+  lastEvent = event # We need this for helpers like alert
   fn = window.services[event.data.service]
   text = event.data.text
-  post_callback = (url) ->
+  postCallback = (url) ->
     event.source.postMessage({action: 'openUrl', url: url }, event.origin)
-  url = fn(text, post_callback)
+  url = fn(text, postCallback)
   if typeof url == "string"
-    post_callback(url) 
+    postCallback(url) 
 
 # Respond to requests from the safe, cozy world of extensions,
 # where no eval happens.
 window.addEventListener 'message', (event) ->
-  parseServices(event) if(event.data.action == 'services')
-  resolve(event)       if(event.data.action == 'resolve')
+  parseServices(event)         if event.data.action == 'services'
+  resolve(event)               if event.data.action == 'resolve'
+  getDefaultsFromGithub(event) if event.data.action == 'getDefaultServices'
 

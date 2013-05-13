@@ -12,3 +12,4 @@ document.addEventListener 'DOMContentLoaded', ->
   # it on to the sandbox
   chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
     iFrame.contentWindow.postMessage(request, '*')
+

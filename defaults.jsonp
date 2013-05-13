@@ -1,0 +1,18 @@
+bazinga('# You have jquery and underscore available. Hack away!\n\
+# Don\'t try console.log, it will not work because this stuff\n\
+# is run in a sandbox. But you can use alert.\n\
+\n\
+# An example for a more elaborated resolver than just putting\n\
+# a word in a string: Resolve a unix timestamp\n\
+timestamp = (val) ->\n\
+  date = new Date(val*1000)\n\
+  alert(date.toLocaleString())\n\
+\n\
+# This has to be the last part of your script, and it defines\n\
+# the context menu items that will be created.\n\
+{\n\
+  "Timestamp": timestamp\n\
+  "Facebook object": (id) -> "https://facebook.com/#{id}"\n\
+  "Subreddit":     (word) -> "http://reddit.com/r/#{word}"\n\
+  "Twitter user":  (user) -> "http://twitter.com/#{user}"\n\
+}')
