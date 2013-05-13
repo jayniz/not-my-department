@@ -3,7 +3,7 @@ bazinga('# You have jquery and underscore available. Hack away!\n\
 # is run in a sandbox. But you can use alert.\n\
 \n\
 # An example for a more elaborated resolver than just putting\n\
-# a word in a string: Resolve a unix timestamp (in seconds)\n\
+# a word in a string: Resolve a unix timestamp (in seconds).\n\
 timestamp = (val) ->\n\
   date = new Date(val*1000)\n\
   alert(date.toLocaleString())\n\
