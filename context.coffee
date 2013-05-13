@@ -6,7 +6,7 @@ default_services = """
 # An example for a more elaborated resolver than just putting
 # a word in a string: Resolve a unix timestamp
 timestamp = (val) ->
-  date = new Date(val)
+  date = new Date(val*1000)
   alert(date.toLocaleString())
 
 # This has to be the last part of your script, and it defines
