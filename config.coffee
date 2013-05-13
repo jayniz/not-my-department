@@ -33,7 +33,7 @@ window.undBitte = ->
   chrome.runtime.onMessage.addListener (request, sender, sendResponse) ->
     return unless request.action == "defaultServices"
     document.getElementById('status-label').innerText = ''
-    ace_editor.setValue(val.defaultServices)
+    ace_editor.setValue(request.services)
     ace_editor.selection.clearSelection()
 
 

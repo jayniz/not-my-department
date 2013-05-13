@@ -36,6 +36,7 @@ getDefaultsFromGithub = (event) ->
     jsonpCallback: "bazinga"
     success:  success
     error:    error
+    timeout:  10000
   )
 
 
